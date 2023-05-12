@@ -31,7 +31,10 @@ class ilPurgeRoleUIUIHookGUI extends ilUIHookPluginGUI {
 
     $role_id = $_REQUEST['obj_id'];
 
-    if($_REQUEST['cmdClass'] === 'ilobjrolegui' && ($_REQUEST['baseClass'] === 'ilAdministrationGUI' || $_REQUEST['baseClass'] === 'ilrepositorygui') && !empty($role_id) && isset($_REQUEST["purge"][$role_id])) {
+    if(strtolower($_REQUEST['cmdClass']) === 'ilobjrolegui' && (
+        strtolower($_REQUEST['baseClass']) === 'iladministrationgui'
+        || strtolower($_REQUEST['baseClass']) === 'ilrepositorygui'
+        ) && !empty($role_id) && isset($_REQUEST["purge"][$role_id])) {
       $settings = [
         "active" => !!$_REQUEST["purge"][$role_id]['active'],
         "day" => $_REQUEST["purge"][$role_id]['day'],
