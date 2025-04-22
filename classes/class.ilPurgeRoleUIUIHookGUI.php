@@ -36,9 +36,9 @@ class ilPurgeRoleUIUIHookGUI extends ilUIHookPluginGUI {
         || strtolower($_REQUEST['baseClass'] ?? '') === 'ilrepositorygui'
         ) && !empty($role_id) && isset($_REQUEST["purge"][$role_id])) {
       $settings = [
-        "active" => !!$_REQUEST["purge"][$role_id]['active'],
-        "day" => $_REQUEST["purge"][$role_id]['day'],
-        "month" => $_REQUEST["purge"][$role_id]['month'],
+        "active" => !empty($_REQUEST["purge"][$role_id]['active']),
+        "day" => !empty($_REQUEST["purge"][$role_id]['day']) ? $_REQUEST["purge"][$role_id]['day'] : '',
+        "month" => !empty($_REQUEST["purge"][$role_id]['month']) ? $_REQUEST["purge"][$role_id]['month'] : '',
       ];
 
       global $tpl, $ilCtrl, $lng, $DIC, $ilDB;
@@ -124,6 +124,8 @@ class ilPurgeRoleUIUIHookGUI extends ilUIHookPluginGUI {
         $db_values[ $db_row["role_id"] ] = $db_row;
       }
       
+      $is_active = !empty($db_values[ $role_id ]['active']) && $db_values[ $role_id ]['active'] != false;
+
       ob_start();
       ?>
       <div class="form-group" id="il_prop_purge">
@@ -134,7 +136,7 @@ class ilPurgeRoleUIUIHookGUI extends ilUIHookPluginGUI {
             $checkbox_input = new ilCheckboxInputGUI($this->plugin->txt("purge_active"));
             $checkbox_input->setPostVar("purge[" . $role_id . "][active]");
             $checkbox_input->setOptionTitle("");
-            $checkbox_input->setChecked(!!$db_values[ $role_id ]['active']);
+            $checkbox_input->setChecked($is_active);
             $checkbox_input->setValue(true);
             echo $checkbox_input->render();
             ?>
@@ -152,7 +154,7 @@ class ilPurgeRoleUIUIHookGUI extends ilUIHookPluginGUI {
                   $select_input = new ilSelectInputGUI($this->plugin->txt("day"));
                   $select_input->setPostVar("purge[" . $role_id . "][day]");
                   $select_input->setOptions($days);
-                  $select_input->setValue($db_values[ $role_id ]['day']);
+                  if (!empty($db_values[ $role_id ]['day'])) $select_input->setValue($db_values[ $role_id ]['day']);
                   echo $select_input->render();
                 ?>
               </td>
@@ -162,7 +164,7 @@ class ilPurgeRoleUIUIHookGUI extends ilUIHookPluginGUI {
                   $select_input = new ilSelectInputGUI($this->plugin->txt("month"));
                   $select_input->setPostVar("purge[" . $role_id . "][month]");
                   $select_input->setOptions($months);
-                  $select_input->setValue($db_values[ $role_id ]['month']);
+                  if (!empty($db_values[ $role_id ]['month'])) $select_input->setValue($db_values[ $role_id ]['month']);
                   echo $select_input->render();
                   ?>
               </td>
